@@ -4,6 +4,7 @@ import me.gerald.game.element.Element;
 import me.gerald.game.element.ElementType;
 
 import java.awt.*;
+import java.util.List;
 
 public class AirElement extends Element {
     public AirElement(int spawnX, int spawnY) {
@@ -13,5 +14,5 @@ public class AirElement extends Element {
     }
 
     @Override
-    public void performCheck(Element[][] elements) { }
+    public void performCheck(List<List<Element>> elements) { }
 }

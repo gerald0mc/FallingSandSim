@@ -2,33 +2,33 @@ package me.gerald.game.element;
 
 import me.gerald.game.GameConstants;
 import me.gerald.game.element.elements.other.AirElement;
-import me.gerald.game.element.elements.solids.movable.SandElement;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class ElementManager {
-    public Element[][] elements = new Element[GameConstants.SCREEN_HEIGHT][GameConstants.SCREEN_WIDTH];
-
-    public static ElementManager instance;
+    public List<List<Element>> elements = new LinkedList<>();
 
     public ElementManager() {
-        int xOffset = 0;
-        int rows = 0;
-        for (int i = 0; i < (GameConstants.SCREEN_WIDTH * GameConstants.SCREEN_HEIGHT); i++) {
-            if (xOffset == GameConstants.SCREEN_WIDTH) {
-                xOffset = 0;
-                rows++;
-            } else if (rows == GameConstants.SCREEN_HEIGHT) break;
-            if (rows == 0)
-                elements[rows][xOffset] = new SandElement(xOffset, rows);
-            else
-                elements[rows][xOffset] = new AirElement(xOffset, rows);
-            xOffset++;
+        for (int y = 0; y < GameConstants.SCREEN_HEIGHT; y++) {
+            elements.add(new LinkedList<>());
+            for (int x = 0; x < GameConstants.SCREEN_WIDTH; x++) {
+                elements.get(y).add(new AirElement(x, y));
+            }
         }
     }
 
     public void swapPositions(int startX, int startY, int endX, int endY) {
-        if (elements[endY][endX] == null) return;
-        elements[startY][startX] = elements[endY][endX];
-        elements[endY][endX] = elements[startY][startX];
-        System.out.println(startY);
+        if (endY > elements.size() || endX > elements.get(0).size()) return;
+        Element startTarget = elements.get(startY).get(startX);
+        startTarget.x = endX;
+        startTarget.y = endY;
+        Element endTarget = elements.get(endY).get(endX);
+        endTarget.x = startX;
+        endTarget.y = startY;
+        elements.get(endY).set(endX, startTarget);
+        elements.get(startY).set(startX, endTarget);
+        if (elements.get(endY).get(endX) == startTarget) System.out.println("Swap successful :)");
+        else System.out.println("Swap failed :(");
     }
 }

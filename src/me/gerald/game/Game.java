@@ -2,65 +2,58 @@ package me.gerald.game;
 
 import me.gerald.game.element.Element;
 import me.gerald.game.element.ElementManager;
+import me.gerald.game.element.elements.other.AirElement;
 import me.gerald.game.element.elements.solids.movable.SandElement;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class Game extends JPanel implements Runnable {
     public final int tileSize = 1; //1x1 pixels
 
-    final int FPS = 60;
-    private int actualFPS;
+    private long lastTick = System.currentTimeMillis();
 
     Thread gameThread;
 
     public static ElementManager elementManager = null;
+    public static MouseListener mouseListener = new MouseListener();
 
     public Game() {
-        elementManager = new ElementManager();
-        ElementManager.instance = elementManager;
-        System.out.println("Initialized the ElementManager!");
         this.setPreferredSize(new Dimension(GameConstants.SCREEN_WIDTH, GameConstants.SCREEN_HEIGHT));
-        this.setBackground(Color.BLACK);
+        this.setBackground(Color.GRAY);
         this.setDoubleBuffered(true);
+        this.addMouseListener(mouseListener);
         this.setFocusable(true);
+        elementManager = new ElementManager();
+        System.out.println("Initialized the ElementManager!");
         startLoop();
     }
 
     @Override
     public void run() {
-        double drawInterval = 1000000000f / FPS;
-        double delta = 0;
-        long lastTime = System.nanoTime();
-        long currentTime;
-        long timer = 0;
-        int debugFPS = 0;
-
         while (gameThread != null) {
-            currentTime = System.nanoTime();
-            delta += (currentTime - lastTime) / drawInterval;
-            timer += (currentTime - lastTime);
-            lastTime = currentTime;
-            if (delta >= 1) {
+            if (System.currentTimeMillis() - lastTick >= 250 /*4 ticks a second or a tick every 250 milliseconds*/) {
+                lastTick = System.currentTimeMillis();
                 update();
                 repaint();
-                delta--;
-                debugFPS++;
-            }
-            if (timer >= 1000000000) {
-                actualFPS = debugFPS;
-                debugFPS = 0;
-                timer = 0;
             }
         }
     }
 
     public void update() {
-        for (int currentY = 0; currentY < GameConstants.SCREEN_HEIGHT; currentY++) {
-            for (int currentX = 0; currentX < GameConstants.SCREEN_WIDTH; currentX++) {
-                Element element = elementManager.elements[currentY][currentX];
+        for (List<Element> list : elementManager.elements) {
+            for (Element element : list) {
                 element.performCheck(elementManager.elements);
+            }
+        }
+        if (mouseListener.isSpawning()) {
+            for (int x = 0; x < 5; x++) {
+                for (int y = 0; y < 5; y++) {
+                    SandElement sandElement = new SandElement(mouseListener.getX() + x, mouseListener.getY() + y);
+                    if (!sandElement.isOnScreen() || !(elementManager.elements.get(y).get(x) instanceof AirElement)) continue;
+                    elementManager.elements.get(y).set(x, sandElement);
+                }
             }
         }
     }
@@ -68,13 +61,11 @@ public class Game extends JPanel implements Runnable {
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
         Graphics2D graphics2D = (Graphics2D) graphics;
-        if (elementManager != null && elementManager.elements != null) {
-            for (int currentY = 0; currentY < GameConstants.SCREEN_HEIGHT; currentY++) {
-                for (int currentX = 0; currentX < GameConstants.SCREEN_WIDTH; currentX++) {
-                    Element element = elementManager.elements[currentY][currentX];
-                    graphics2D.setColor(element.currentColor);
-                    graphics2D.drawRect(element.x, element.y, tileSize, tileSize);
-                }
+        for (int currentY = 0; currentY != GameConstants.SCREEN_HEIGHT; currentY++) {
+            for (int currentX = 0; currentX != GameConstants.SCREEN_WIDTH; currentX++) {
+                Element element = elementManager.elements.get(currentY).get(currentX);
+                graphics2D.setColor(element.currentColor);
+                graphics2D.drawRect(element.x, element.y, tileSize, tileSize);
             }
         }
         graphics2D.dispose();
@@ -83,9 +74,5 @@ public class Game extends JPanel implements Runnable {
     public void startLoop() {
         gameThread = new Thread(this);
         gameThread.start();
-    }
-
-    public int getFPS() {
-        return actualFPS;
     }
 }
