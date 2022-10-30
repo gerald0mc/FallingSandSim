@@ -2,12 +2,11 @@ package me.gerald.game;
 
 import me.gerald.game.element.Element;
 import me.gerald.game.element.ElementManager;
-import me.gerald.game.element.elements.liquids.WaterElement;
 import me.gerald.game.element.elements.others.AirElement;
-import me.gerald.game.element.elements.solids.movable.SandElement;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class Game extends JPanel implements Runnable {
 
     public Game() {
         this.setPreferredSize(new Dimension(GameConstants.SCREEN_WIDTH, GameConstants.SCREEN_HEIGHT));
-        this.setBackground(Color.GRAY);
+        this.setBackground(Color.LIGHT_GRAY);
         this.setDoubleBuffered(true);
         this.addMouseListener(mouseListener);
         this.addMouseMotionListener(mouseListener);
@@ -50,17 +49,30 @@ public class Game extends JPanel implements Runnable {
     }
 
     public void update() {
-        for (List<Element> list : elementManager.elements) {
+        for (List<Element> list : elementManager.screenElements) {
             for (Element element : list) {
-                element.performCheck(elementManager.elements);
+                element.performCheck(elementManager.screenElements);
             }
         }
         if (mouseListener.isSpawning()) {
             for (int x = 0; x < 5; x++) {
                 for (int y = 0; y < 5; y++) {
-                    Element spawnElement = elementManager.returnSpawnElement(keyBoardListener.selectedKeyCode, mouseListener.getX() + x, mouseListener.getY() + y);
-                    if (!spawnElement.isOnScreen() || !(elementManager.elements.get(spawnElement.y).get(spawnElement.x) instanceof AirElement)) continue;
-                    elementManager.elements.get(spawnElement.y).set(spawnElement.x, spawnElement);
+                    int mouseX = mouseListener.getX();
+                    int mouseY = mouseListener.getY();
+                    Element spawnElement = null;
+                    for (Element element : elementManager.elements) {
+                        if (element.getKeyCode() == keyBoardListener.selectedKeyCode) {
+                            try {
+                                spawnElement = element.getClass().newInstance();
+                                spawnElement.x = mouseX + x;
+                                spawnElement.y = mouseY + y;
+                            } catch (InstantiationException | IllegalAccessException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                    if (spawnElement == null || !spawnElement.isOnScreen() || !(elementManager.screenElements.get(spawnElement.y).get(spawnElement.x) instanceof AirElement)) return;
+                    elementManager.screenElements.get(spawnElement.y).set(spawnElement.x, spawnElement);
                 }
             }
         }
@@ -69,17 +81,23 @@ public class Game extends JPanel implements Runnable {
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
         Graphics2D graphics2D = (Graphics2D) graphics;
-        for (List<Element> list : elementManager.elements) {
+        for (List<Element> list : elementManager.screenElements) {
             for (Element element : list) {
                 graphics2D.setColor(element.currentColor);
                 graphics2D.drawRect(element.x, element.y, tileSize, tileSize);
             }
         }
-        int yOffset = GameConstants.SCREEN_HEIGHT - ((graphics2D.getFont().getSize() + 2) * 10);
-        graphics2D.setColor(Color.WHITE);
+        int yOffsetOut = GameConstants.SCREEN_HEIGHT - ((graphics2D.getFont().getSize() + 2) * 10);
+        graphics2D.setColor(Color.DARK_GRAY);
+        if (out.size() > 10) out.remove(0);
         for (String str : out) {
-            graphics2D.drawString(str, 2, yOffset);
-            yOffset += graphics2D.getFont().getSize() + 2;
+            graphics2D.drawString(str, 2, yOffsetOut);
+            yOffsetOut += graphics2D.getFont().getSize() + 2;
+        }
+        int yOffsetBinds = graphics2D.getFont().getSize() + 1;
+        for (Element element : elementManager.elements) {
+            graphics2D.drawString(element.getName() + " | " + KeyEvent.getKeyText(element.getKeyCode()), 1, yOffsetBinds);
+            yOffsetBinds += graphics2D.getFont().getSize() + 2;
         }
         graphics2D.dispose();
     }
