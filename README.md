@@ -5,10 +5,17 @@ I am going to start off with just a general physics simulation of different of e
 ### Elements I want to add:
 - [X] Basic AirElement
 - [X] SandElement
-- WaterElement
-- DirtElement
+- [X] WaterElement
+- [X] DirtElement
 - LavaElement
 - WoodElement
 - GunPowder Element
 - SmokeElement
 - Acid Element
+
+### Element variables I want to add
+- [X] inertialResistance (Related to how likely the element is to fall 0-1f)
+- [X] density (Related to what the element will float on 0-inf)
+- [X] isFreeFalling (Related to falling calculations)
+- burnChance (Related to how likely it is that a neighboring fire element will light it on fire)
+- corrodeChance (Related to how likely it is that a neighboring acid element will corrode it away)

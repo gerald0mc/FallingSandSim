@@ -4,7 +4,7 @@ import javax.swing.event.MouseInputAdapter;
 import javax.swing.event.MouseInputListener;
 import java.awt.event.MouseEvent;
 
-public class MouseListener extends MouseInputAdapter {
+public class MouseListener implements MouseInputListener {
     private boolean spawning = false;
     private int x;
     private int y;
@@ -19,14 +19,14 @@ public class MouseListener extends MouseInputAdapter {
         spawning = false;
     }
 
-    public boolean isSpawning() {
-        return spawning;
-    }
-
     @Override
     public void mouseMoved(MouseEvent e) {
-        x = e.getX();
-        y = e.getY();
+//        x = e.getX();
+//        y = e.getY();
+    }
+
+    public boolean isSpawning() {
+        return spawning;
     }
 
     public int getX() {
@@ -35,5 +35,20 @@ public class MouseListener extends MouseInputAdapter {
 
     public int getY() {
         return y;
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) { }
+
+    @Override
+    public void mouseEntered(MouseEvent e) { }
+
+    @Override
+    public void mouseExited(MouseEvent e) { }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        x = e.getX();
+        y = e.getY();
     }
 }

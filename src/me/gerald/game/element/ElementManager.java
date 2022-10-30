@@ -1,8 +1,13 @@
 package me.gerald.game.element;
 
+import me.gerald.game.Game;
 import me.gerald.game.GameConstants;
-import me.gerald.game.element.elements.other.AirElement;
+import me.gerald.game.element.elements.liquids.WaterElement;
+import me.gerald.game.element.elements.others.AirElement;
+import me.gerald.game.element.elements.solids.movable.DirtElement;
+import me.gerald.game.element.elements.solids.movable.SandElement;
 
+import java.awt.event.KeyEvent;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,7 +33,14 @@ public class ElementManager {
         endTarget.y = startY;
         elements.get(endY).set(endX, startTarget);
         elements.get(startY).set(startX, endTarget);
-        if (elements.get(endY).get(endX) == startTarget) System.out.println("Swap successful :)");
-        else System.out.println("Swap failed :(");
+    }
+
+    public Element returnSpawnElement(int selectedKeyCode, int mouseX, int mouseY) {
+        return switch (selectedKeyCode) {
+            case KeyEvent.VK_Q -> new AirElement(mouseX, mouseY);
+            case KeyEvent.VK_E -> new WaterElement(mouseX, mouseY);
+            case KeyEvent.VK_R -> new DirtElement(mouseX, mouseY);
+            default -> new SandElement(mouseX, mouseY);
+        };
     }
 }
