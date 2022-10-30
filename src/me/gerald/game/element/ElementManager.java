@@ -3,6 +3,7 @@ package me.gerald.game.element;
 import me.gerald.game.Constants;
 import me.gerald.game.element.elements.gases.SmokeElement;
 import me.gerald.game.element.elements.gases.SteamElement;
+import me.gerald.game.element.elements.liquids.AcidElement;
 import me.gerald.game.element.elements.liquids.LavaElement;
 import me.gerald.game.element.elements.liquids.WaterElement;
 import me.gerald.game.element.elements.others.AirElement;
@@ -35,6 +36,7 @@ public class ElementManager {
         elements.add(new FireElement());
         elements.add(new SmokeElement());
         elements.add(new SteamElement());
+        elements.add(new AcidElement());
         elements.forEach(element -> elementMap.put(element.getClass(), element));
     }
 

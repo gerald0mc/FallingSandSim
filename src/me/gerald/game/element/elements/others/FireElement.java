@@ -15,7 +15,7 @@ public class FireElement extends Element {
 
     public FireElement() {
         super("Fire", ElementType.GAS, KeyEvent.VK_F, new Color(250, 173, 6));
-        this.tempStrength = 0.4f;
+        this.burnStrength = 0.4f;
         this.inertialResistance = 0.2f;
         this.density = 0.3f;
     }
@@ -24,7 +24,7 @@ public class FireElement extends Element {
         super("Fire", ElementType.GAS, KeyEvent.VK_F, new Color(250, 173, 6));
         this.x = spawnX;
         this.y = spawnY;
-        this.tempStrength = 0.4f;
+        this.burnStrength = 0.4f;
         this.inertialResistance = 0.1f;
         this.density = 0.2f;
     }
@@ -34,7 +34,7 @@ public class FireElement extends Element {
         super("Fire", ElementType.GAS, KeyEvent.VK_F, new Color(250, 173, 6));
         this.x = spawnX;
         this.y = spawnY;
-        this.tempStrength = 0.4f;
+        this.burnStrength = 0.4f;
         this.inertialResistance = 0.1f;
         this.density = 0.2f;
         this.chanceToPutOut = customPutOut;
@@ -43,7 +43,7 @@ public class FireElement extends Element {
     @Override
     public void performCheck(List<List<Element>> elements) {
         performDrop(elements);
-        doBurnCheck(elements);
+        performElementCheck(elements, CheckType.FIRE);
         final double random = Math.random();
         if (random < chanceToPutOut)
             Simulation.elementManager.setPosition(new SmokeElement(this.x, this.y));

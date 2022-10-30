@@ -3,6 +3,7 @@ package me.gerald.game.element;
 import me.gerald.game.Simulation;
 import me.gerald.game.Constants;
 import me.gerald.game.element.elements.gases.SteamElement;
+import me.gerald.game.element.elements.liquids.AcidElement;
 import me.gerald.game.element.elements.liquids.LavaElement;
 import me.gerald.game.element.elements.liquids.WaterElement;
 import me.gerald.game.element.elements.others.AirElement;
@@ -23,20 +24,24 @@ public abstract class Element {
 
     // Element variables
 
+    //Related to calculations
+    public boolean isFreeFalling = false;
+    //Related to calculations
+    public boolean isRising = false;
     //The current color of the element for when it is being rendered
     public Color currentColor;
     //Related to how likely the element is to fall 0-1f
     public float inertialResistance;
     //Related to what the element will float on 0-inf
     public float density;
-    //Related to calculations
-    public boolean isFreeFalling = false;
-    //Related to calculations
-    public boolean isRising = false;
     //Related to how hot/cold an element is
-    public float tempStrength;
+    public float burnStrength;
     //Related to how likely the element will catch fire
     public float burnResistance;
+    //Related to how corrosive an element is
+    public float corrodeStrength;
+    //Related to how likely the element will corrode
+    public float corrodeResistance;
 
     public Element() {
         this.name = "";
@@ -54,14 +59,18 @@ public abstract class Element {
 
     //Actual methods
 
-    public void performCheck(List<List<Element>> elements) { }
+    public abstract void performCheck(List<List<Element>> elements);
 
     public boolean densityCheck(float density) {
         return this.density > density;
     }
 
     public boolean burnCheck(float burnResistance) {
-        return this.tempStrength > burnResistance;
+        return this.burnStrength > burnResistance;
+    }
+
+    public boolean corrodeCheck(float corrodeResistance) {
+        return this.corrodeStrength > corrodeResistance;
     }
 
     public boolean setFreeFalling() {
@@ -176,21 +185,34 @@ public abstract class Element {
         }
     }
 
-    public void doBurnCheck(List<List<Element>> elements) {
+    public void performElementCheck(List<List<Element>> elements, CheckType checkType) {
         if (!topHeightCheck() || !bottomHeightCheck() || !leftWidthCheck() || !rightWidthCheck()) return;
         Element upElement = elements.get(y - 1).get(x);
         Element leftElement = elements.get(y).get(x - 1);
         Element rightElement = elements.get(y).get(x + 1);
         Element downElement = elements.get(y - 1).get(x);
         Element[] elementArray = new Element[] {upElement, leftElement, rightElement, downElement};
-        for (Element element : elementArray) {
-            if (burnCheck(element.burnResistance) && element instanceof WaterElement) {
-                Simulation.elementManager.setPosition(new SteamElement(element.x, element.y));
-            } else if (burnCheck(element.burnResistance) && element.getElementType() != ElementType.GAS && !(element instanceof FireElement || element instanceof LavaElement)) {
-                Simulation.elementManager.setPosition(new FireElement(element.x, element.y));
+        switch (checkType) {
+            case FIRE -> {
+                for (Element element : elementArray) {
+                    if (burnCheck(element.burnResistance) && element instanceof WaterElement) {
+                        Simulation.elementManager.setPosition(new SteamElement(element.x, element.y));
+                    } else if (burnCheck(element.burnResistance) && element.getElementType() != ElementType.GAS && !(element instanceof FireElement || element instanceof LavaElement)) {
+                        Simulation.elementManager.setPosition(new FireElement(element.x, element.y));
+                    }
+                }
+            }
+            case CORRODE -> {
+                for (Element element : elementArray) {
+                    if (corrodeCheck(element.corrodeResistance) && !(element instanceof AirElement)) {
+                        Simulation.elementManager.setPosition(new AcidElement(element.x, element.y));
+                    }
+                }
             }
         }
     }
+
+    public enum CheckType {FIRE, CORRODE}
 
     public void checkGasPixel(List<List<Element>> elements) {
         if (density > 0) performDrop(elements);

@@ -13,6 +13,8 @@ public class WaterElement extends Element {
         this.inertialResistance = 0.01f;
         this.burnResistance = 0.4f;
         this.density = 0.1f;
+        this.corrodeStrength = 0.1f;
+        this.corrodeResistance = 0.2f;
     }
 
     public WaterElement(int spawnX, int spawnY) {
@@ -22,6 +24,8 @@ public class WaterElement extends Element {
         this.inertialResistance = 0.01f;
         this.burnResistance = 0.4f;
         this.density = 0.1f;
+        this.corrodeStrength = 0.1f;
+        this.corrodeResistance = 0.2f;
     }
 
     @Override
