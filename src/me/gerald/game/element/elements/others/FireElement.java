@@ -10,13 +10,14 @@ import java.awt.event.KeyEvent;
 import java.util.List;
 
 public class FireElement extends Element {
-    public float chanceToPutOut = 0.2f;
+    //The lower, the less likely
+    public float chanceToPutOut = 0.1f;
 
     public FireElement() {
         super("Fire", ElementType.GAS, KeyEvent.VK_F, new Color(250, 173, 6));
         this.tempStrength = 0.4f;
-        this.inertialResistance = 0.1f;
-        this.density = 0.2f;
+        this.inertialResistance = 0.2f;
+        this.density = 0.3f;
     }
 
     public FireElement(int spawnX, int spawnY) {
@@ -26,6 +27,17 @@ public class FireElement extends Element {
         this.tempStrength = 0.4f;
         this.inertialResistance = 0.1f;
         this.density = 0.2f;
+    }
+
+    //Might use this later when I add elements like fuel/gasoline
+    public FireElement(int spawnX, int spawnY, float customPutOut) {
+        super("Fire", ElementType.GAS, KeyEvent.VK_F, new Color(250, 173, 6));
+        this.x = spawnX;
+        this.y = spawnY;
+        this.tempStrength = 0.4f;
+        this.inertialResistance = 0.1f;
+        this.density = 0.2f;
+        this.chanceToPutOut = customPutOut;
     }
 
     @Override

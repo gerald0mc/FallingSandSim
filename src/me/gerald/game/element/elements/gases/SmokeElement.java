@@ -9,18 +9,18 @@ import java.util.List;
 import java.util.Random;
 
 public class SmokeElement extends Element {
+    static int min = 60;
+    static int max = 110;
+    static int ranNum = min + (int) (Math.random() * ((max-min) + 1));
+
     public SmokeElement() {
         super("Smoke", ElementType.GAS, KeyEvent.VK_S, new Color(ranNum, ranNum, ranNum));
         this.density = -0.5f;
         this.inertialResistance = -0.4f;
     }
 
-    static int min = 60;
-    static int max = 110;
-    static int ranNum = min+(int)(Math.random()*((max-min) + 1));
-
     public SmokeElement(int spawnX, int spawnY) {
-        super("Smoke", ElementType.GAS, KeyEvent.VK_D, new Color(ranNum, ranNum, ranNum));
+        super("Smoke", ElementType.GAS, KeyEvent.VK_S, new Color(ranNum, ranNum, ranNum));
         this.x = spawnX;
         this.y = spawnY;
         this.density = -0.5f;
@@ -29,6 +29,6 @@ public class SmokeElement extends Element {
 
     @Override
     public void performCheck(List<List<Element>> elements) {
-        performRise(elements);
+        checkGasPixel(elements);
     }
 }
