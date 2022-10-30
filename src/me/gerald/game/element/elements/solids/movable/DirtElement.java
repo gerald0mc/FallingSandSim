@@ -1,6 +1,5 @@
 package me.gerald.game.element.elements.solids.movable;
 
-import me.gerald.game.Game;
 import me.gerald.game.element.Element;
 import me.gerald.game.element.ElementType;
 

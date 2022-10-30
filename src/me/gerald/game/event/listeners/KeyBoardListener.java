@@ -1,5 +1,6 @@
-package me.gerald.game;
+package me.gerald.game.event.listeners;
 
+import me.gerald.game.Simulation;
 import me.gerald.game.element.Element;
 
 import java.awt.event.KeyEvent;
@@ -14,10 +15,10 @@ public class KeyBoardListener implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        for (Element element : Game.elementManager.elements) {
+        for (Element element : Simulation.elementManager.elements) {
             if (element.getKeyCode() == keyCode) {
                 selectedKeyCode = keyCode;
-                Game.out.add("Now spawning " + element.getName() + "!");
+                Simulation.out.add("Now spawning " + element.getName() + "!");
                 return;
             }
         }

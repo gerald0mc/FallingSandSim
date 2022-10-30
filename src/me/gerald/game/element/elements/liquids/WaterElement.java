@@ -1,9 +1,7 @@
 package me.gerald.game.element.elements.liquids;
 
-import me.gerald.game.Game;
 import me.gerald.game.element.Element;
 import me.gerald.game.element.ElementType;
-import me.gerald.game.element.elements.others.AirElement;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;

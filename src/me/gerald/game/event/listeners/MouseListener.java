@@ -1,4 +1,4 @@
-package me.gerald.game;
+package me.gerald.game.event.listeners;
 
 import javax.swing.event.MouseInputAdapter;
 import javax.swing.event.MouseInputListener;

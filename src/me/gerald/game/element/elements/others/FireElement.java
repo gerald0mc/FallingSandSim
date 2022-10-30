@@ -1,10 +1,9 @@
 package me.gerald.game.element.elements.others;
 
-import me.gerald.game.Game;
+import me.gerald.game.Simulation;
 import me.gerald.game.element.Element;
 import me.gerald.game.element.ElementType;
 import me.gerald.game.element.elements.gases.SmokeElement;
-import me.gerald.game.element.elements.liquids.LavaElement;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -35,6 +34,6 @@ public class FireElement extends Element {
         doBurnCheck(elements);
         final double random = Math.random();
         if (random < chanceToPutOut)
-            Game.elementManager.setPosition(new SmokeElement(this.x, this.y));
+            Simulation.elementManager.setPosition(new SmokeElement(this.x, this.y));
     }
 }

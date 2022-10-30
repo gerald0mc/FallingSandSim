@@ -1,7 +1,7 @@
 package me.gerald.game.element;
 
-import me.gerald.game.Game;
-import me.gerald.game.GameConstants;
+import me.gerald.game.Simulation;
+import me.gerald.game.Constants;
 import me.gerald.game.element.elements.liquids.LavaElement;
 import me.gerald.game.element.elements.others.AirElement;
 import me.gerald.game.element.elements.others.FireElement;
@@ -73,7 +73,7 @@ public abstract class Element {
     }
 
     public boolean isOnScreen() {
-        return x >= 0 && x <= GameConstants.SCREEN_WIDTH && y >= 0 && y <= GameConstants.SCREEN_HEIGHT;
+        return x >= 0 && x <= Constants.SCREEN_WIDTH && y >= 0 && y <= Constants.SCREEN_HEIGHT;
     }
 
     public void performDrop(List<List<Element>> elements) {
@@ -81,7 +81,7 @@ public abstract class Element {
         Element downElement = elements.get(y + 1).get(x);
         if (densityCheck(downElement.density) && downElement.getElementType() != ElementType.IMMOVABLE_SOLID) {
             if (setFreeFalling())
-                Game.elementManager.swapPositions(x, y, x, y + 1);
+                Simulation.elementManager.swapPositions(x, y, x, y + 1);
         } else if (!densityCheck(downElement.density) || downElement.getElementType() == ElementType.MOVABLE_SOLID || downElement.getElementType() == ElementType.IMMOVABLE_SOLID && !densityCheck(downElement.density)) {
             isFreeFalling = false;
         }
@@ -91,22 +91,22 @@ public abstract class Element {
             case 0 -> {
                 Element downLeftElement = elements.get(y + 1).get(x - 1);
                 if (densityCheck(downLeftElement.density) && (downLeftElement.getElementType() == ElementType.LIQUID || downLeftElement.getElementType() == ElementType.GAS))
-                    Game.elementManager.swapPositions(x, y, x - 1, y + 1);
+                    Simulation.elementManager.swapPositions(x, y, x - 1, y + 1);
             }
             case 1 -> {
                 Element downRightElement = elements.get(y + 1).get(x + 1);
                 if (densityCheck(downRightElement.density) && (downRightElement.getElementType() == ElementType.LIQUID || downRightElement.getElementType() == ElementType.GAS))
-                    Game.elementManager.swapPositions(x, y, x + 1, y + 1);
+                    Simulation.elementManager.swapPositions(x, y, x + 1, y + 1);
             }
             case 2 -> {
                 boolean leftAirCheck = densityCheck(elements.get(y + 1).get(x - 1).density) && (elements.get(y + 1).get(x - 1).getElementType() == ElementType.LIQUID || elements.get(y + 1).get(x - 1).getElementType() == ElementType.GAS);
                 boolean rightAirCheck = densityCheck(elements.get(y + 1).get(x + 1).density) && (elements.get(y + 1).get(x + 1).getElementType() == ElementType.LIQUID || elements.get(y + 1).get(x + 1).getElementType() == ElementType.GAS);
                 if (leftAirCheck && rightAirCheck) {
                     double random = Math.random();
-                    if (random < 0.5) Game.elementManager.swapPositions(x, y, x - 1, y + 1);
-                    else Game.elementManager.swapPositions(x, y, x + 1, y + 1);
-                } else if (leftAirCheck) Game.elementManager.swapPositions(x, y, x - 1, y + 1);
-                else if (rightAirCheck) Game.elementManager.swapPositions(x, y, x + 1, y + 1);
+                    if (random < 0.5) Simulation.elementManager.swapPositions(x, y, x - 1, y + 1);
+                    else Simulation.elementManager.swapPositions(x, y, x + 1, y + 1);
+                } else if (leftAirCheck) Simulation.elementManager.swapPositions(x, y, x - 1, y + 1);
+                else if (rightAirCheck) Simulation.elementManager.swapPositions(x, y, x + 1, y + 1);
             }
         }
     }
@@ -116,7 +116,7 @@ public abstract class Element {
         Element topElement = elements.get(y - 1).get(x);
         if (densityCheck(topElement.density) && topElement.getElementType() != ElementType.IMMOVABLE_SOLID) {
             if (setRising())
-                Game.elementManager.swapPositions(x, y, x, y - 1);
+                Simulation.elementManager.swapPositions(x, y, x, y - 1);
         } else if (!densityCheck(topElement.density) || topElement.getElementType() == ElementType.MOVABLE_SOLID || topElement.getElementType() == ElementType.IMMOVABLE_SOLID) {
             isRising = false;
         }
@@ -126,22 +126,22 @@ public abstract class Element {
             case 0 -> {
                 Element upLeftElement = elements.get(y - 1).get(x - 1);
                 if (densityCheck(upLeftElement.density) && upLeftElement.getElementType() == ElementType.GAS)
-                    Game.elementManager.swapPositions(x, y, x - 1, y - 1);
+                    Simulation.elementManager.swapPositions(x, y, x - 1, y - 1);
             }
             case 1 -> {
                 Element upRightElement = elements.get(y - 1).get(x + 1);
                 if (densityCheck(upRightElement.density) && upRightElement.getElementType() == ElementType.GAS)
-                    Game.elementManager.swapPositions(x, y, x + 1, y - 1);
+                    Simulation.elementManager.swapPositions(x, y, x + 1, y - 1);
             }
             case 2 -> {
                 boolean leftAirCheck = densityCheck(elements.get(y - 1).get(x - 1).density) && elements.get(y - 1).get(x - 1).getElementType() == ElementType.GAS;
                 boolean rightAirCheck = densityCheck(elements.get(y - 1).get(x + 1).density) && elements.get(y - 1).get(x + 1).getElementType() == ElementType.GAS;
                 if (leftAirCheck && rightAirCheck) {
                     double random = Math.random();
-                    if (random < 0.5) Game.elementManager.swapPositions(x, y, x - 1, y - 1);
-                    else Game.elementManager.swapPositions(x, y, x + 1, y - 1);
-                } else if (leftAirCheck) Game.elementManager.swapPositions(x, y, x - 1, y - 1);
-                else if (rightAirCheck) Game.elementManager.swapPositions(x, y, x + 1, y - 1);
+                    if (random < 0.5) Simulation.elementManager.swapPositions(x, y, x - 1, y - 1);
+                    else Simulation.elementManager.swapPositions(x, y, x + 1, y - 1);
+                } else if (leftAirCheck) Simulation.elementManager.swapPositions(x, y, x - 1, y - 1);
+                else if (rightAirCheck) Simulation.elementManager.swapPositions(x, y, x + 1, y - 1);
             }
         }
     }
@@ -153,7 +153,7 @@ public abstract class Element {
         Element[] elementArray = new Element[] {upElement, leftElement, rightElement};
         for (Element element : elementArray) {
             if (burnCheck(element.burnResistance) && !(element instanceof FireElement || element instanceof LavaElement || element instanceof AirElement)) {
-                Game.elementManager.setPosition(new FireElement(element.x, element.y));
+                Simulation.elementManager.setPosition(new FireElement(element.x, element.y));
             }
         }
     }
@@ -163,7 +163,7 @@ public abstract class Element {
     }
 
     public boolean bottomHeightCheck() {
-        return y + 1 < GameConstants.SCREEN_HEIGHT;
+        return y + 1 < Constants.SCREEN_HEIGHT;
     }
 
     public boolean leftWidthCheck() {
@@ -171,7 +171,7 @@ public abstract class Element {
     }
 
     public boolean rightWidthCheck() {
-        return x + 1 < GameConstants.SCREEN_WIDTH;
+        return x + 1 < Constants.SCREEN_WIDTH;
     }
 
     public int bottomSideCanPlace() {

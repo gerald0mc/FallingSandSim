@@ -9,9 +9,9 @@ I am going to start off with just a general physics simulation of different of e
 - [X] DirtElement
 - [X] LavaElement
 - WoodElement
-- GunPowder Element
+- GunPowderElement
 - [X] SmokeElement
-- Acid Element
+- AcidElement
 
 ### Element variables I want to add
 - [X] inertialResistance (Related to how likely the element is to fall 0-1f)

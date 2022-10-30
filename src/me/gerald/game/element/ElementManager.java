@@ -1,7 +1,6 @@
 package me.gerald.game.element;
 
-import me.gerald.game.Game;
-import me.gerald.game.GameConstants;
+import me.gerald.game.Constants;
 import me.gerald.game.element.elements.gases.SmokeElement;
 import me.gerald.game.element.elements.liquids.LavaElement;
 import me.gerald.game.element.elements.liquids.WaterElement;
@@ -10,7 +9,6 @@ import me.gerald.game.element.elements.others.FireElement;
 import me.gerald.game.element.elements.solids.movable.DirtElement;
 import me.gerald.game.element.elements.solids.movable.SandElement;
 
-import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,9 +20,9 @@ public class ElementManager {
     public List<List<Element>> screenElements = new LinkedList<>();
 
     public ElementManager() {
-        for (int y = 0; y < GameConstants.SCREEN_HEIGHT; y++) {
+        for (int y = 0; y < Constants.SCREEN_HEIGHT; y++) {
             screenElements.add(new LinkedList<>());
-            for (int x = 0; x < GameConstants.SCREEN_WIDTH; x++) {
+            for (int x = 0; x < Constants.SCREEN_WIDTH; x++) {
                 screenElements.get(y).add(new AirElement(x, y));
             }
         }
