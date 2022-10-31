@@ -8,17 +8,15 @@ import me.gerald.game.element.elements.liquids.LavaElement;
 import me.gerald.game.element.elements.liquids.WaterElement;
 import me.gerald.game.element.elements.others.AirElement;
 import me.gerald.game.element.elements.others.FireElement;
-import me.gerald.game.element.elements.solids.movable.DirtElement;
+import me.gerald.game.element.elements.solids.immovable.DirtElement;
+import me.gerald.game.element.elements.solids.movable.SaltElement;
 import me.gerald.game.element.elements.solids.movable.SandElement;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class ElementManager {
     public List<Element> elements = new LinkedList<>();
-    public Map<Class<?>, Element> elementMap = new HashMap<>();
     public List<List<Element>> screenElements = new LinkedList<>();
 
     public ElementManager() {
@@ -28,16 +26,21 @@ public class ElementManager {
                 screenElements.get(y).add(new AirElement(x, y));
             }
         }
+        //Gases
         elements.add(new AirElement());
-        elements.add(new SandElement());
-        elements.add(new WaterElement());
-        elements.add(new DirtElement());
-        elements.add(new LavaElement());
-        elements.add(new FireElement());
         elements.add(new SmokeElement());
         elements.add(new SteamElement());
+        elements.add(new FireElement());
+        //Liquids
+        elements.add(new WaterElement());
+        elements.add(new LavaElement());
         elements.add(new AcidElement());
-        elements.forEach(element -> elementMap.put(element.getClass(), element));
+        //Solids
+        //Movable
+        elements.add(new SaltElement());
+        elements.add(new SandElement());
+        //Immovable
+        elements.add(new DirtElement());
     }
 
     public void swapPositions(int startX, int startY, int endX, int endY) {

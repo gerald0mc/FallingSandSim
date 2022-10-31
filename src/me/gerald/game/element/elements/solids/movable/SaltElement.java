@@ -7,20 +7,23 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
-public class DirtElement extends Element {
-    public DirtElement() {
-        super("Dirt", ElementType.IMMOVABLE_SOLID, KeyEvent.VK_R, new Color(110, 52, 2));
+public class SaltElement extends Element {
+    public SaltElement() {
+        super("Salt", ElementType.MOVABLE_SOLID, KeyEvent.VK_X, new Color(249, 228, 228));
         this.inertialResistance = 0.5f;
         this.density = 0.2f;
         this.burnResistance = 0.2f;
+        this.corrodeResistance = 0.1f;
     }
 
-    public DirtElement(int spawnX, int spawnY) {
-        super("Dirt", ElementType.IMMOVABLE_SOLID, KeyEvent.VK_R, new Color(110, 52, 2));
+    public SaltElement(int spawnX, int spawnY) {
+        super("Salt", ElementType.MOVABLE_SOLID, KeyEvent.VK_X, new Color(249, 228, 228));
         this.x = spawnX;
         this.y = spawnY;
         this.inertialResistance = 0.5f;
-        this.density = 0.3f;
+        this.density = 0.2f;
+        this.burnResistance = 0.2f;
+        this.corrodeResistance = 0.1f;
     }
 
     @Override

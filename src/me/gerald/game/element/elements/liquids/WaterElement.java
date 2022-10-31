@@ -31,5 +31,11 @@ public class WaterElement extends Element {
     @Override
     public void performCheck(List<List<Element>> elements) {
         performDrop(elements);
+        if (!topHeightCheck() || !bottomHeightCheck() || !leftWidthCheck() || !rightWidthCheck()) return;
+        Element upElement = elements.get(y - 1).get(x);
+        Element leftElement = elements.get(y).get(x - 1);
+        Element rightElement = elements.get(y).get(x + 1);
+        Element downElement = elements.get(y - 1).get(x);
+        Element[] elementArray = new Element[] {upElement, leftElement, rightElement, downElement};
     }
 }

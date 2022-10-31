@@ -12,7 +12,9 @@ public class SandElement extends Element {
         super("Sand", ElementType.MOVABLE_SOLID, KeyEvent.VK_W, new Color(212, 176, 38));
         this.inertialResistance = 0.2f;
         this.density = 0.1f;
-        this.burnResistance = 0.3f;
+        this.burnResistance = 0.4f;
+        this.corrodeResistance = 0.3f;
+        this.corrodeStrength = 0.0f;
     }
     public SandElement(int spawnX, int spawnY) {
         super("Sand", ElementType.MOVABLE_SOLID, KeyEvent.VK_W, new Color(212, 176, 38));
@@ -20,6 +22,9 @@ public class SandElement extends Element {
         this.y = spawnY;
         this.inertialResistance = 0.2f;
         this.density = 0.1f;
+        this.burnResistance = 0.4f;
+        this.corrodeResistance = 0.3f;
+        this.corrodeStrength = 0.0f;
     }
 
     @Override
