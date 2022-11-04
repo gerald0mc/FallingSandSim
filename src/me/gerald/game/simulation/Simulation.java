@@ -1,10 +1,11 @@
-package me.gerald.game;
+package me.gerald.game.simulation;
 
-import me.gerald.game.element.Element;
-import me.gerald.game.element.ElementManager;
-import me.gerald.game.element.elements.others.AirElement;
-import me.gerald.game.event.listeners.KeyBoardListener;
-import me.gerald.game.event.listeners.MouseListener;
+import me.gerald.game.editor.ShapeEditor;
+import me.gerald.game.simulation.element.Element;
+import me.gerald.game.simulation.element.ElementManager;
+import me.gerald.game.simulation.element.elements.others.AirElement;
+import me.gerald.game.simulation.listeners.KeyBoardListener;
+import me.gerald.game.simulation.listeners.MouseListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,8 +16,6 @@ import java.util.List;
 public class Simulation extends JPanel implements Runnable {
     public final int tileSize = 1; //1x1 pixels
 
-    private long lastTick = System.currentTimeMillis();
-
     Thread gameThread;
 
     public static ElementManager elementManager = null;
@@ -25,9 +24,13 @@ public class Simulation extends JPanel implements Runnable {
 
     public static List<String> out = new LinkedList<>();
 
+    public static JFrame shapeEditorFrame;
+
+    private int FPS = -1;
+
     public Simulation() {
         this.setPreferredSize(new Dimension(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT));
-        this.setBackground(Color.LIGHT_GRAY);
+        this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
         this.addMouseListener(mouseListener);
         this.addMouseMotionListener(mouseListener);
@@ -37,22 +40,53 @@ public class Simulation extends JPanel implements Runnable {
         System.out.println("Initialized the ElementManager!");
         startLoop();
         out.add("Welcome to the simulation!");
+        out.add("Created by gerald0mc for fun :D");
+        out.add("All the elements are used via the KeyBinds. (See top left)");
+        // Shape Editor tingz
+        shapeEditorFrame = new JFrame();
+        shapeEditorFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        shapeEditorFrame.setResizable(false);
+        shapeEditorFrame.setTitle(Constants.GAME_TITLE + " " + Constants.GAME_VERSION + " | Shape Editor");
+        ShapeEditor shapeEditorPanel = new ShapeEditor();
+        shapeEditorFrame.add(shapeEditorPanel);
+        shapeEditorFrame.pack();
+        shapeEditorFrame.setLocationRelativeTo(null);
+        shapeEditorFrame.setVisible(true);
     }
 
     @Override
     public void run() {
+        int TARGET_FPS = 60;
+        double drawInterval = 1000000000f / TARGET_FPS;
+        double delta = 0;
+        long lastTime = System.nanoTime();
+        long currentTime;
+        long timer = 0;
+        int countFPS = 0;
+
         while (gameThread != null) {
-            if (System.currentTimeMillis() - lastTick >= 250 /*4 ticks a second or a tick every 250 milliseconds*/) {
-                lastTick = System.currentTimeMillis();
+            currentTime = System.nanoTime();
+            delta += (currentTime - lastTime) / drawInterval;
+            timer += (currentTime - lastTime);
+            lastTime = currentTime;
+            if (delta >= 1) {
                 update();
                 repaint();
+                delta--;
+                countFPS++;
+            }
+            if (timer >= 1000000000) {
+                timer = 0;
+                FPS = countFPS;
+                countFPS = 0;
             }
         }
     }
 
     public void update() {
-        for (List<Element> list : elementManager.screenElements) {
-            for (Element element : list) {
+        for (int y = 0; y < elementManager.screenElements.size(); y++) {
+            for (int x = 0; x < elementManager.screenElements.get(y).size(); x++) {
+                Element element = elementManager.screenElements.get(y).get(x);
                 element.performCheck(elementManager.screenElements);
             }
         }
@@ -62,7 +96,8 @@ public class Simulation extends JPanel implements Runnable {
                     int mouseX = mouseListener.getX();
                     int mouseY = mouseListener.getY();
                     Element spawnElement = null;
-                    for (Element element : elementManager.elements) {
+                    for (int i = 0; i < elementManager.elements.size(); i++) {
+                        Element element = elementManager.elements.get(i);
                         if (element.getKeyCode() == keyBoardListener.selectedKeyCode) {
                             try {
                                 spawnElement = element.getClass().newInstance();
@@ -71,6 +106,7 @@ public class Simulation extends JPanel implements Runnable {
                             } catch (InstantiationException | IllegalAccessException e) {
                                 throw new RuntimeException(e);
                             }
+                            break;
                         }
                     }
                     if (spawnElement == null || !spawnElement.isOnScreen() || !(elementManager.screenElements.get(spawnElement.y).get(spawnElement.x) instanceof AirElement)) return;
@@ -83,12 +119,23 @@ public class Simulation extends JPanel implements Runnable {
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
         Graphics2D graphics2D = (Graphics2D) graphics;
-        for (List<Element> list : elementManager.screenElements) {
-            for (Element element : list) {
+        // Pixel Rendering
+        for (int y = 0; y < elementManager.screenElements.size(); y++) {
+            for (int x = 0; x < elementManager.screenElements.get(y).size(); x++) {
+                Element element = elementManager.screenElements.get(y).get(x);
                 graphics2D.setColor(element.currentColor);
-                graphics2D.drawRect(element.x, element.y, tileSize, tileSize);
+                graphics2D.fillRect(element.x, element.y, tileSize, tileSize);
             }
         }
+        // Element Binds
+        graphics2D.setColor(Color.DARK_GRAY);
+        int yOffsetBinds = graphics2D.getFont().getSize() + 1;
+        for (Element element : elementManager.elements) {
+            graphics2D.drawString(element.getName() + " | " + KeyEvent.getKeyText(element.getKeyCode()), 1, yOffsetBinds);
+            yOffsetBinds += graphics2D.getFont().getSize() + 2;
+        }
+        graphics2D.drawString("Shape Editor | =", 1, yOffsetBinds);
+        // Out Log
         int yOffsetOut = Constants.SCREEN_HEIGHT - ((graphics2D.getFont().getSize() + 2) * 10);
         graphics2D.setColor(Color.DARK_GRAY);
         if (out.size() > 10) out.remove(0);
@@ -96,16 +143,15 @@ public class Simulation extends JPanel implements Runnable {
             graphics2D.drawString(str, 2, yOffsetOut);
             yOffsetOut += graphics2D.getFont().getSize() + 2;
         }
-        int yOffsetBinds = graphics2D.getFont().getSize() + 1;
-        for (Element element : elementManager.elements) {
-            graphics2D.drawString(element.getName() + " | " + KeyEvent.getKeyText(element.getKeyCode()), 1, yOffsetBinds);
-            yOffsetBinds += graphics2D.getFont().getSize() + 2;
-        }
         graphics2D.dispose();
     }
 
     public void startLoop() {
         gameThread = new Thread(this);
         gameThread.start();
+    }
+
+    public int getFPS() {
+        return FPS;
     }
 }

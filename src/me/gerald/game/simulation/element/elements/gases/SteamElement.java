@@ -1,7 +1,7 @@
-package me.gerald.game.element.elements.gases;
+package me.gerald.game.simulation.element.elements.gases;
 
-import me.gerald.game.element.Element;
-import me.gerald.game.element.ElementType;
+import me.gerald.game.simulation.element.Element;
+import me.gerald.game.simulation.element.ElementType;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;

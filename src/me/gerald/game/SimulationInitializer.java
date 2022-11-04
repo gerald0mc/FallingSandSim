@@ -1,5 +1,8 @@
 package me.gerald.game;
 
+import me.gerald.game.simulation.Constants;
+import me.gerald.game.simulation.Simulation;
+
 import javax.swing.*;
 
 public class SimulationInitializer {

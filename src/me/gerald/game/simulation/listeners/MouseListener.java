@@ -1,6 +1,5 @@
-package me.gerald.game.event.listeners;
+package me.gerald.game.simulation.listeners;
 
-import javax.swing.event.MouseInputAdapter;
 import javax.swing.event.MouseInputListener;
 import java.awt.event.MouseEvent;
 
@@ -20,10 +19,12 @@ public class MouseListener implements MouseInputListener {
     }
 
     @Override
-    public void mouseMoved(MouseEvent e) {
-//        x = e.getX();
-//        y = e.getY();
+    public void mouseDragged(MouseEvent e) {
+        x = e.getX();
+        y = e.getY();
     }
+
+    // Getters
 
     public boolean isSpawning() {
         return spawning;
@@ -37,6 +38,8 @@ public class MouseListener implements MouseInputListener {
         return y;
     }
 
+    // Irrelevant
+
     @Override
     public void mouseClicked(MouseEvent e) { }
 
@@ -47,8 +50,7 @@ public class MouseListener implements MouseInputListener {
     public void mouseExited(MouseEvent e) { }
 
     @Override
-    public void mouseDragged(MouseEvent e) {
-        x = e.getX();
-        y = e.getY();
+    public void mouseMoved(MouseEvent e) {
+
     }
 }

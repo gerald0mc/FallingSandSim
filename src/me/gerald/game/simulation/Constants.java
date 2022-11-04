@@ -1,4 +1,4 @@
-package me.gerald.game;
+package me.gerald.game.simulation;
 
 public class Constants {
     public static final String GAME_TITLE = "Noita Clone";
